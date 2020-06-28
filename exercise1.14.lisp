@@ -7,16 +7,23 @@
 
 (define (count-change amount) (cc amount 5))
 (define (cc amount coin)
+    (define noMoreCoinTypes (= coin 0))
+    (define (subtract coin amount) (- amount (kinds coin)))
+    (define givenToMuch (< amount 0))
+    (define nextCoinType (- coin 1))
+    
     (cond ((= amount 0) 1)
-          ((or (< amount 0) (= coin 0)) 0)
-          (else (+ (cc amount (- coin 1)) 
-                   (cc (- amount (kinds coin))
-                        coin)))))
+          ((or givenToMuch noMoreCoinTypes) 0)
+          (else (+ (cc amount (nextCoinType)) 
+                   (cc (subtract coin amount) coin)))))
 
 ;; (count-change 11)
 ;; (cc 11 5)
-;; (cc )
-;; (+ (cc 11 (- 5 1)) (cc (- 11 (kinds 5)) 5))
-;; (+ (cc 11 4) (cc (- 11 50) 5))
-;; (+ (cc 11 4) (cc (- 39) 5))
-;; (+ (+ (cc 11 (- 4 1)) (cc (- 11 (kinds 4)) 4)) 0)
+;; (+ (cc 11 4) 0)
+;; (+ (cc 11 3) (cc 11 3) 0 0)
+;; (+ (cc 11 2) (cc 11 2) 0 0 0 )
+;; (+ (cc 11 1) (cc 11 1) (cc 11 1))
+;; (+ (cc 11 0) (cc 11 0) (cc 11 0) (cc 11 0))
+
+;; the tree grows with bigger inputs as a time continues on
+
